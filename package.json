@@ -1,0 +1,19 @@
+{
+	"name": "bassbox-gui",
+	"version": "0.0.1",
+	"description": "Electron GUI for Bassbox",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/fwcd/bassbox-gui.git"
+	},
+	"author": "fwcd",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/fwcd/bassbox-gui/issues"
+	},
+	"homepage": "https://github.com/fwcd/bassbox-gui#readme"
+}
