@@ -2,7 +2,7 @@
 	"name": "bassbox-gui",
 	"version": "0.0.1",
 	"description": "Electron GUI for Bassbox",
-	"main": "src/main.js",
+	"main": "src/js/main.js",
 	"scripts": {
 		"start": "electron .",
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -19,5 +19,8 @@
 	"homepage": "https://github.com/fwcd/bassbox-gui#readme",
 	"devDependencies": {
 		"electron": "^6.0.7"
+	},
+	"dependencies": {
+		"cytoscape": "^3.10.0"
 	}
 }

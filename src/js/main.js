@@ -7,9 +7,12 @@ function createWindow() {
 	mainWindow = new BrowserWindow({
 		width: 800,
 		height: 600,
-		autoHideMenuBar: true
+		autoHideMenuBar: true,
+		webPreferences: {
+			nodeIntegration: true
+		}
 	});
-	mainWindow.loadFile(path.join(__dirname, "index.html"));
+	mainWindow.loadFile(path.join(__dirname, "..", "index.html"));
 	mainWindow.on("closed", () => mainWindow = null);
 }
 
