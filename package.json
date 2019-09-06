@@ -2,8 +2,9 @@
 	"name": "bassbox-gui",
 	"version": "0.0.1",
 	"description": "Electron GUI for Bassbox",
-	"main": "src/index.js",
+	"main": "src/main.js",
 	"scripts": {
+		"start": "electron .",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
@@ -15,5 +16,8 @@
 	"bugs": {
 		"url": "https://github.com/fwcd/bassbox-gui/issues"
 	},
-	"homepage": "https://github.com/fwcd/bassbox-gui#readme"
+	"homepage": "https://github.com/fwcd/bassbox-gui#readme",
+	"devDependencies": {
+		"electron": "^6.0.7"
+	}
 }
