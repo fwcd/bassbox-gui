@@ -39,7 +39,11 @@ function jsonRpcProxyFrom(procOut, procIn, scopes) {
 		const raw = line.trim();
 		const response = JSON.parse(raw);
 		if (response.id in context.resolvers) {
-			context.resolvers[response.id](response);
+			if ("result" in response) {
+				context.resolvers[response.id](response.result);
+			} else {
+				console.log(`Warning: No result in response ${raw}`);
+			}
 			delete context.resolvers[response.id];
 		} else {
 			console.log(`Warning: Got unrecognized response ${raw}`);
