@@ -1,11 +1,11 @@
 node {
-	width: 20px;
-	height: 20px;
+	width: 10px;
+	height: 10px;
 	label: data(label);
 }
 
 edge {
-	width: 2;
+	width: 1.5;
 	curve-style: bezier;
 	target-arrow-shape: triangle;
 }
