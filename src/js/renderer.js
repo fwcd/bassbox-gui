@@ -26,6 +26,9 @@ async function setup() {
 		}
 	});
 	cy.style(await loadStylesheet());
+	// TODO: Add nodes on click, add edges on (right-click?) drag
+	// TODO: Show popovers when clicking on nodes to enable customizability
+	//       -> Including source file selectors
 }
 
 setup();
