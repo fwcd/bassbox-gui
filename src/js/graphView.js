@@ -61,6 +61,7 @@ async function createGraphView(element) {
 		const pop = e.target.popper({
 			content: () => {
 				const div = document.createElement("div");
+				div.classList.add("popover");
 				div.innerText = JSON.stringify(e.target.data().node);
 				document.body.appendChild(div);
 				return div;
