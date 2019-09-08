@@ -51,7 +51,6 @@ async function createGraphView(element) {
 		},
 		
 		async addEdge(edge) {
-			// TODO: Handle errors (e.g. cycles)
 			await bassbox.audioGraph.addEdge(edge);
 			cy.add(toCytoEdge(edge));
 		}
@@ -89,7 +88,11 @@ async function createGraphView(element) {
 		cy.remove(addedElements);
 		const srcIndex = sourceCytoNode.data().index;
 		const destIndex = targetCytoNode.data().index;
-		await handler.addEdge({ src: srcIndex, dest: destIndex });
+		try {
+			await handler.addEdge({ src: srcIndex, dest: destIndex });
+		} catch (e) {
+			alert(e.message);
+		}
 	});
 }
 

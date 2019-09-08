@@ -11,9 +11,9 @@ function scopedProxy(context, scope) {
 			if (context.scopes.includes(name)) {
 				return scopedProxy(context, fqName);
 			} else {
-				return (...args) => new Promise(resolve => {
+				return (...args) => new Promise((resolve, reject) => {
 					let requestId = context.id++;
-					context.resolvers[requestId] = resolve;
+					context.deferred[requestId] = { resolve, reject };
 					context.procIn.write(JSON.stringify({
 						jsonrpc: "2.0",
 						id: requestId,
@@ -31,20 +31,24 @@ function jsonRpcProxyFrom(procOut, procIn, scopes) {
 	const context = {
 		scopes,
 		procIn,
-		resolvers: {},
+		deferred: {},
 		id: 0
 	};
 	
 	lineReader(procOut).onLine(line => {
 		const raw = line.trim();
 		const response = JSON.parse(raw);
-		if (response.id in context.resolvers) {
+		if (response.id in context.deferred) {
+			const deferred = context.deferred[response.id];
 			if ("result" in response) {
-				context.resolvers[response.id](response.result);
+				deferred.resolve(response.result);
+			} else if ("error" in response) {
+				const error = response.error;
+				deferred.reject(new Error(`${error.code}: ${error.message}`));
 			} else {
-				console.log(`Warning: No result in response ${raw}`);
+				deferred.reject(new Error(`Warning: No result in response ${raw}`));
 			}
-			delete context.resolvers[response.id];
+			delete context.deferred[response.id];
 		} else {
 			console.log(`Warning: Got unrecognized response ${raw}`);
 		}
