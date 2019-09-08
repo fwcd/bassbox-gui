@@ -8,7 +8,17 @@ node {
 .eh-handle {
 	width: 8px;
 	height: 8px;
-	background-color: red;
+}
+
+.eh-handle, .eh-ghost {
+	background-color: purple;
+	line-color: purple;
+	target-arrow-color: purple;
+}
+
+.eh-preview {
+	line-color: yellow;
+	target-arrow-color: yellow;
 }
 
 edge {
