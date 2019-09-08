@@ -1,7 +1,14 @@
 node {
-	width: 10px;
-	height: 10px;
+	width: 15px;
+	height: 15px;
 	label: data(label);
+	color: white;
+}
+
+.eh-handle {
+	width: 8px;
+	height: 8px;
+	background-color: red;
 }
 
 edge {

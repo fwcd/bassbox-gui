@@ -1,12 +1,14 @@
 const cytoscape = require("cytoscape");
 const klay = require("cytoscape-klay");
 const popper = require("cytoscape-popper");
+const edgeHandles = require("cytoscape-edgehandles");
 const fs = require("fs");
 const path = require("path");
 const { launchBassbox } = require("./bassbox");
 
 cytoscape.use(klay);
 cytoscape.use(popper);
+cytoscape.use(edgeHandles);
 
 async function loadStylesheet() {
 	return await fs.promises.readFile(path.join(__dirname, "..", "css", "graph.css"), { encoding: "utf8" });
@@ -36,6 +38,7 @@ async function createGraphView(element) {
 		}
 	});
 	cy.style(await loadStylesheet());
+	cy.edgehandles();
 	
 	const handler = {
 		async addNode(node, cytoOpts) {
