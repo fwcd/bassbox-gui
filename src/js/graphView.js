@@ -47,18 +47,31 @@ async function createGraphView(element) {
 			cy.add(cytoNode);
 		}
 	};
-	cy.on("click", async e => {
-		if (e.target == null) {
+	
+	cy.on("select", "node", async e => {
+		const pop = e.target.popper({
+			content: () => {
+				const div = document.createElement("div");
+				div.innerText = JSON.stringify(e.target.data().node);
+				document.body.appendChild(div);
+				return div;
+			}
+		});
+		const events = "pan zoom resize";
+		const mover = () => pop.scheduleUpdate();
+		e.target.once("unselect", () => {
+			document.body.removeChild(pop.popper);
+			e.target.off("position", mover);
+			cy.off(events, mover);
+		});
+		e.target.on("position", mover);
+		cy.on(events, mover);
+	});
+
+	cy.on("cxttap", async e => {
+		if (e.target === cy) {
+			// Create node if user right-clicks background
 			await handler.addNode({ type: "Empty" }, { position: e.position });
-		} else if (("group" in e.target) && e.target.group() == "nodes") {
-			e.target.popper({
-				content: () => {
-					const div = document.createElement("div");
-					div.innerText = JSON.stringify(e.target.data().node);
-					document.body.appendChild(div);
-					return div;
-				}
-			});
 		}
 	});
 }
