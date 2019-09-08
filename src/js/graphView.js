@@ -15,7 +15,7 @@ async function loadStylesheet() {
 }
 
 function toCytoNode(node, i) {
-	return { data: { id: `${i}`, label: node.type, node: node } };
+	return { data: { id: `${i}`, index: i, label: node.type, node: node } };
 }
 
 function toCytoEdge(edge) {
@@ -48,10 +48,17 @@ async function createGraphView(element) {
 				Object.assign(cytoNode, cytoOpts);
 			}
 			cy.add(cytoNode);
+		},
+		
+		async addEdge(edge) {
+			// TODO: Handle errors (e.g. cycles)
+			await bassbox.audioGraph.addEdge(edge);
+			cy.add(toCytoEdge(edge));
 		}
 	};
 	
 	cy.on("select", "node", async e => {
+		// Show popover with details about node
 		const pop = e.target.popper({
 			content: () => {
 				const div = document.createElement("div");
@@ -76,6 +83,13 @@ async function createGraphView(element) {
 			// Create node if user right-clicks background
 			await handler.addNode({ type: "Empty" }, { position: e.position });
 		}
+	});
+	
+	cy.on("ehcomplete", async (e, sourceCytoNode, targetCytoNode, addedElements) => {
+		cy.remove(addedElements);
+		const srcIndex = sourceCytoNode.data().index;
+		const destIndex = targetCytoNode.data().index;
+		await handler.addEdge({ src: srcIndex, dest: destIndex });
 	});
 }
 
