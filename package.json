@@ -22,6 +22,7 @@
 	},
 	"dependencies": {
 		"cytoscape": "^3.10.0",
-		"cytoscape-klay": "^3.1.2"
+		"cytoscape-klay": "^3.1.2",
+		"cytoscape-popper": "^1.0.4"
 	}
 }
