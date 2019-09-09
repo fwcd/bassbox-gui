@@ -41,7 +41,7 @@ function nodeTemplates(bassbox) {
 		} },
 		File() { return {
 			type: "File",
-			file_path: "",
+			filePath: "",
 			paused: false
 		} },
 		IIRLowpass() { return {

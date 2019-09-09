@@ -4,7 +4,7 @@ const popper = require("cytoscape-popper");
 const edgeHandles = require("cytoscape-edgehandles");
 const fs = require("fs");
 const path = require("path");
-const { launchBassbox } = require("./bassbox");
+const { launchBassbox, nodeTemplates } = require("./bassbox");
 const { sleep, addEnterListener } = require("./utils");
 
 cytoscape.use(klay);
@@ -27,13 +27,11 @@ function toCytoEdge(edge) {
 }
 
 /** Creates a popover HTML element from a Bassbox node. */
-function createPopoverElement(node, performUpdate) {
+function createNodeDetailsEditor(node, performUpdate) {
 	const updatedNode = Object.assign({}, node);
-
 	const div = document.createElement("div");
-	div.classList.add("popover");
 	
-	for (let prop in node) {
+	for (const prop in node) {
 		const value = node[prop];
 		const row = document.createElement("p");
 
@@ -137,7 +135,7 @@ async function createGraphView(element) {
 		// Show popover with details about node
 		const pop = e.target.popper({
 			content: () => {
-				const elem = createPopoverElement(e.target.data().node, async updatedNode => {
+				const details = createNodeDetailsEditor(e.target.data().node, async updatedNode => {
 					const nodeIndex = e.target.data().index;
 					try {
 						await bassbox.audioGraph.replaceNode(nodeIndex, updatedNode);
@@ -147,8 +145,9 @@ async function createGraphView(element) {
 						await handler.showNotification(e.message);
 					}
 				});
-				document.body.appendChild(elem);
-				return elem;
+				details.classList.add("popover");
+				document.body.appendChild(details);
+				return details;
 			}
 		});
 		const events = "pan zoom resize";
@@ -164,8 +163,43 @@ async function createGraphView(element) {
 
 	cy.on("cxttap", async e => {
 		if (e.target === cy) {
-			// Create node if user right-clicks background
-			await handler.addNode({ type: "Empty" }, { position: e.position });
+			// Show node creation popover if user right-clicks background
+			cy.popper({
+				content: () => {
+					const div = document.createElement("div");
+					
+					const select = document.createElement("select");
+					div.appendChild(select);
+					
+					let details = document.createElement("div");
+					div.appendChild(details);
+
+					const templates = nodeTemplates(bassbox);
+					for (const template in templates) {
+						const option = document.createElement("option");
+						option.value = JSON.stringify(templates[template]());
+						option.innerText = template;
+						select.add(option);
+					}
+					select.addEventListener("change", () => {
+						const newDetails = createNodeDetailsEditor(JSON.parse(select.value), async updatedNode => {
+							try {
+								await handler.addNode(updatedNode, { position: e.position });
+							} catch (e) {
+								handler.showNotification(e.message);
+							}
+							document.body.removeChild(div);
+						});
+						div.replaceChild(newDetails, details);
+						details = newDetails;
+					});
+
+					div.classList.add("popover");
+					document.body.appendChild(div);
+					return div;
+				},
+				renderedPosition: () => e.renderedPosition
+			});
 		}
 	});
 	
