@@ -118,6 +118,11 @@ async function createGraphView(element) {
 			cy.add(cytoNode);
 		},
 		
+		async removeNode(index) {
+			await bassbox.audioGraph.removeNode(index);
+			cy.getElementById(`${index}`).remove();
+		},
+		
 		async addEdge(edge) {
 			await bassbox.audioGraph.addEdge(edge);
 			cy.add(toCytoEdge(edge));
@@ -137,13 +142,14 @@ async function createGraphView(element) {
 	
 	cy.on("select", "node", async e => {
 		// Show popover with details about node
-		const pop = e.target.popper({
+		const target = e.target;
+		const pop = target.popper({
 			content: () => {
-				const details = createNodeDetailsEditor(e.target.data().node, "Update", async updatedNode => {
-					const nodeIndex = e.target.data().index;
+				const details = createNodeDetailsEditor(target.data().node, "Update", async updatedNode => {
+					const nodeIndex = target.data().index;
 					try {
 						await bassbox.audioGraph.replaceNode(nodeIndex, updatedNode);
-						Object.assign(e.target.data(), toCytoNode(updatedNode, nodeIndex).data);
+						Object.assign(target.data(), toCytoNode(updatedNode, nodeIndex).data);
 						// TODO: Update view directly, not first once the user pans
 					} catch (e) {
 						await handler.showNotification(e.message);
@@ -154,14 +160,29 @@ async function createGraphView(element) {
 				return details;
 			}
 		});
+
 		const events = "pan zoom resize";
 		const mover = () => pop.scheduleUpdate();
-		e.target.once("unselect", () => {
+		const unselector = () => {
 			document.body.removeChild(pop.popper);
 			e.target.off("position", mover);
+			document.removeEventListener("keyup", remover);
 			cy.off(events, mover);
-		});
-		e.target.on("position", mover);
+		};
+		const remover = async e => {
+			if (e.code === "Delete" || e.code === "Backspace") {
+				try {
+					await handler.removeNode(target.data().index)
+				} catch (e) {
+					showNotification(e.message);
+				}
+				unselector();
+			}
+		};
+
+		target.once("unselect", unselector);
+		target.on("position", mover);
+		document.addEventListener("keyup", remover);
 		cy.on(events, mover);
 	});
 

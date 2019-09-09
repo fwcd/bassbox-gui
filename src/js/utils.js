@@ -43,7 +43,7 @@ function lineReader(readable) {
 function addEnterListener(element, action) {
 	element.addEventListener("keyup", e => {
 		e.preventDefault();
-		if (e.keyCode === 13) {
+		if (e.key === "Enter") {
 			action();
 		}
 	});
