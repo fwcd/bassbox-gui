@@ -32,48 +32,50 @@ function createNodeDetailsEditor(node, performUpdate) {
 	const div = document.createElement("div");
 	
 	for (const prop in node) {
-		const value = node[prop];
-		const row = document.createElement("p");
+		if (prop !== "type") {
+			const value = node[prop];
+			const row = document.createElement("p");
 
-		const label = document.createElement("label");
-		label.innerText = `${prop}: `;
-		row.appendChild(label);
-		
-		switch (typeof value) {
-			case "string":
-				const textField = document.createElement("input");
-				textField.value = value;
-				textField.addEventListener("change", () => updatedNode[prop] = textField.value);
-				addEnterListener(textField, () => performUpdate(updatedNode));
-				row.appendChild(textField);
-				break;
-			case "number":
-				const numField = document.createElement("input");
-				numField.type = "number";
-				numField.value = value;
-				numField.addEventListener("change", () => updatedNode[prop] = +numField.value);
-				addEnterListener(numField, () => performUpdate(updatedNode));
-				row.appendChild(numField);
-				break;
-			case "boolean":
-				const checkBox = document.createElement("input");
-				checkBox.type = "checkbox";
-				checkBox.checked = value;
-				checkBox.addEventListener("change", () => {
-					updatedNode[prop] = checkBox.checked;
-					performUpdate(updatedNode);
-				});
-				row.appendChild(checkBox);
-				break;
-			default:
-				const otherField = document.createElement("input");
-				otherField.disabled = true;
-				otherField.value = value;
-				row.appendChild(otherField);
-				break;
+			const label = document.createElement("label");
+			label.innerText = `${prop}: `;
+			row.appendChild(label);
+			
+			switch (typeof value) {
+				case "string":
+					const textField = document.createElement("input");
+					textField.value = value;
+					textField.addEventListener("change", () => updatedNode[prop] = textField.value);
+					addEnterListener(textField, () => performUpdate(updatedNode));
+					row.appendChild(textField);
+					break;
+				case "number":
+					const numField = document.createElement("input");
+					numField.type = "number";
+					numField.value = value;
+					numField.addEventListener("change", () => updatedNode[prop] = +numField.value);
+					addEnterListener(numField, () => performUpdate(updatedNode));
+					row.appendChild(numField);
+					break;
+				case "boolean":
+					const checkBox = document.createElement("input");
+					checkBox.type = "checkbox";
+					checkBox.checked = value;
+					checkBox.addEventListener("change", () => {
+						updatedNode[prop] = checkBox.checked;
+						performUpdate(updatedNode);
+					});
+					row.appendChild(checkBox);
+					break;
+				default:
+					const otherField = document.createElement("input");
+					otherField.disabled = true;
+					otherField.value = value;
+					row.appendChild(otherField);
+					break;
+			}
+			
+			div.appendChild(row);
 		}
-		
-		div.appendChild(row);
 	}
 	
 	const updateButton = document.createElement("button");
