@@ -141,6 +141,8 @@ async function createGraphView(element) {
 					const nodeIndex = e.target.data().index;
 					try {
 						await bassbox.audioGraph.replaceNode(nodeIndex, updatedNode);
+						Object.assign(e.target.data(), toCytoNode(updatedNode, nodeIndex).data);
+						// TODO: Update view directly, not first once the user pans
 					} catch (e) {
 						await handler.showNotification(e.message);
 					}
