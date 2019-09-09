@@ -121,6 +121,8 @@ async function createGraphView(element) {
 			div.classList.add("popover", "notification");
 			div.innerText = msg;
 			document.body.appendChild(div);
+			await sleep(50);
+			div.classList.add("shown");
 			await sleep(3000);
 			document.body.removeChild(div);
 		}
