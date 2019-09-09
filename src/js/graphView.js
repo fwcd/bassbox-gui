@@ -5,7 +5,7 @@ const edgeHandles = require("cytoscape-edgehandles");
 const fs = require("fs");
 const path = require("path");
 const { launchBassbox } = require("./bassbox");
-const { addEnterListener } = require("./utils");
+const { sleep, addEnterListener } = require("./utils");
 
 cytoscape.use(klay);
 cytoscape.use(popper);
@@ -100,6 +100,7 @@ async function createGraphView(element) {
 	cy.style(await loadStylesheet());
 	cy.edgehandles();
 	
+	// UI-specific methods that operate directly on the Bassbox graph and/or the Cytoscape view
 	const handler = {
 		async addNode(node, cytoOpts) {
 			const index = await bassbox.audioGraph.addNode(node);
@@ -113,6 +114,15 @@ async function createGraphView(element) {
 		async addEdge(edge) {
 			await bassbox.audioGraph.addEdge(edge);
 			cy.add(toCytoEdge(edge));
+		},
+		
+		async showNotification(msg) {
+			const div = document.createElement("div");
+			div.classList.add("popover", "notification");
+			div.innerText = msg;
+			document.body.appendChild(div);
+			await sleep(3000);
+			document.body.removeChild(div);
 		}
 	};
 	
@@ -125,7 +135,7 @@ async function createGraphView(element) {
 					try {
 						await bassbox.audioGraph.replaceNode(nodeIndex, updatedNode);
 					} catch (e) {
-						alert(e.message);
+						await handler.showNotification(e.message);
 					}
 				});
 				document.body.appendChild(elem);
@@ -157,7 +167,7 @@ async function createGraphView(element) {
 		try {
 			await handler.addEdge({ src: srcIndex, dest: destIndex });
 		} catch (e) {
-			alert(e.message);
+			await handler.showNotification(e.message);
 		}
 	});
 }

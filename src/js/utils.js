@@ -1,5 +1,5 @@
 function sleep(ms) {
-	return new Promise(resolve => setTimeout(ms, resolve()));
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // An async iterator over the lines in a readable
@@ -49,4 +49,4 @@ function addEnterListener(element, action) {
 	});
 }
 
-module.exports = { lineReader, addEnterListener };
+module.exports = { lineReader, addEnterListener, sleep };
