@@ -27,7 +27,7 @@ function toCytoEdge(edge) {
 }
 
 /** Creates a popover HTML element from a Bassbox node. */
-function createNodeDetailsEditor(node, performUpdate) {
+function createNodeDetailsEditor(node, updateButtonLabel, performUpdate) {
 	const updatedNode = Object.assign({}, node);
 	const div = document.createElement("div");
 	
@@ -79,7 +79,7 @@ function createNodeDetailsEditor(node, performUpdate) {
 	}
 	
 	const updateButton = document.createElement("button");
-	updateButton.innerText = "Update";
+	updateButton.innerText = updateButtonLabel;
 	updateButton.addEventListener("click", () => performUpdate(updatedNode));
 	div.appendChild(updateButton);
 	
@@ -137,7 +137,7 @@ async function createGraphView(element) {
 		// Show popover with details about node
 		const pop = e.target.popper({
 			content: () => {
-				const details = createNodeDetailsEditor(e.target.data().node, async updatedNode => {
+				const details = createNodeDetailsEditor(e.target.data().node, "Update", async updatedNode => {
 					const nodeIndex = e.target.data().index;
 					try {
 						await bassbox.audioGraph.replaceNode(nodeIndex, updatedNode);
@@ -183,8 +183,9 @@ async function createGraphView(element) {
 						option.innerText = template;
 						select.add(option);
 					}
-					select.addEventListener("change", () => {
-						const newDetails = createNodeDetailsEditor(JSON.parse(select.value), async updatedNode => {
+
+					const updateDetailsEditor = () => {
+						const newDetails = createNodeDetailsEditor(JSON.parse(select.value), "Create", async updatedNode => {
 							try {
 								await handler.addNode(updatedNode, { position: e.position });
 							} catch (e) {
@@ -194,7 +195,9 @@ async function createGraphView(element) {
 						});
 						div.replaceChild(newDetails, details);
 						details = newDetails;
-					});
+					};
+					select.addEventListener("change", updateDetailsEditor);
+					updateDetailsEditor();
 
 					div.classList.add("popover");
 					document.body.appendChild(div);
