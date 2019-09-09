@@ -33,19 +33,19 @@ function createPopoverElement(node, performUpdate) {
 	const div = document.createElement("div");
 	div.classList.add("popover");
 	
-	for (property in node) {
-		const value = node[property];
+	for (let prop in node) {
+		const value = node[prop];
 		const row = document.createElement("p");
 
 		const label = document.createElement("label");
-		label.innerText = property;
+		label.innerText = `${prop}: `;
 		row.appendChild(label);
 		
 		switch (typeof value) {
 			case "string":
 				const textField = document.createElement("input");
 				textField.value = value;
-				textField.addEventListener("change", () => updatedNode[property] = textField.value);
+				textField.addEventListener("change", () => updatedNode[prop] = textField.value);
 				addEnterListener(textField, () => performUpdate(updatedNode));
 				row.appendChild(textField);
 				break;
@@ -53,20 +53,25 @@ function createPopoverElement(node, performUpdate) {
 				const numField = document.createElement("input");
 				numField.type = "number";
 				numField.value = value;
-				numField.addEventListener("change", () => updatedNode[property] = +numField.value);
+				numField.addEventListener("change", () => updatedNode[prop] = +numField.value);
 				addEnterListener(numField, () => performUpdate(updatedNode));
 				row.appendChild(numField);
 				break;
 			case "boolean":
 				const checkBox = document.createElement("input");
-				checkBox.type = "check";
+				checkBox.type = "checkbox";
 				checkBox.checked = value;
 				checkBox.addEventListener("change", () => {
-					updatedNode[property] = checkBox.checked;
+					updatedNode[prop] = checkBox.checked;
 					performUpdate(updatedNode);
 				});
+				row.appendChild(checkBox);
 				break;
 			default:
+				const otherField = document.createElement("input");
+				otherField.disabled = true;
+				otherField.value = value;
+				row.appendChild(otherField);
 				break;
 		}
 		
