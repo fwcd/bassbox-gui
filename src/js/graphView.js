@@ -98,6 +98,7 @@ async function createGraphView(element) {
 		layout: {
 			name: "klay",
 			animate: true,
+			padding: 200,
 			klay: {
 				spacing: 120
 			}
