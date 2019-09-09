@@ -15,4 +15,5 @@ body {
 	color: black;
 	padding: 10px;
 	border-radius: 3px;
+	z-index: 100;
 }

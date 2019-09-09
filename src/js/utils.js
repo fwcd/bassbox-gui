@@ -40,4 +40,13 @@ function lineReader(readable) {
 	}
 }
 
-module.exports = { lineReader };
+function addEnterListener(element, action) {
+	element.addEventListener("keyup", e => {
+		e.preventDefault();
+		if (e.keyCode === 13) {
+			action();
+		}
+	});
+}
+
+module.exports = { lineReader, addEnterListener };
