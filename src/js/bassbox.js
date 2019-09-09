@@ -17,7 +17,7 @@ const { jsonRpcProxyFrom } = require("./jsonrpc");
  */
 function launchBassbox() {
 	const exeName = `bassbox${process.platform === "win32" ? ".exe" : ""}`
-	const proc = childProcess.execFile(path.join(__dirname, "..", "..", "local", exeName), ["-e", "speaker"]);
+	const proc = childProcess.execFile(path.join(__dirname, "..", "..", "local", exeName), ["--raw-graph", "--engine", "speaker"]);
 	const services = ["audioPlayer", "audioGraph"];
 	return jsonRpcProxyFrom(proc.stdout, proc.stdin, services);
 }

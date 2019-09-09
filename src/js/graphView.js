@@ -17,8 +17,9 @@ async function loadStylesheet() {
 }
 
 /** Converts a Bassbox node to Cytoscape's representation. */
-function toCytoNode(node, i) {
-	return { data: { id: `${i}`, index: i, label: node.type, node: node } };
+function toCytoNode(node, i, isMaster) {
+	const label = node.type + (isMaster ? " (master)" : "");
+	return { data: { id: `${i}`, index: i, label: label, node: node } };
 }
 
 /** Converts a Bassbox edge to Cytoscape's representation. */
@@ -92,7 +93,7 @@ async function createGraphView(element) {
 	const graph = await bassbox.audioGraph.get();
 	const cy = cytoscape({
 		container: element,
-		elements: graph.nodes.map((node, i) => toCytoNode(node, i))
+		elements: graph.nodes.map((node, i) => toCytoNode(node, i, i === graph.master))
 			.concat(graph.edges.map(edge => toCytoEdge(edge))),
 		layout: {
 			name: "klay",
