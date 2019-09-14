@@ -44,6 +44,13 @@ function nodeTemplates(bassbox) {
 			filePath: "",
 			paused: false
 		} },
+		Command() { return {
+			type: "Command",
+			command: "",
+			args: [],
+			sampleHz: 44_100.0,
+			paused: false
+		} },
 		IIRLowpass() { return {
 			type: "IIRLowpass",
 			cutoffHz: 200.0,
