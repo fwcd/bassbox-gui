@@ -1,5 +1,7 @@
 # Bassbox GUI
-A graphical UI to [Bassbox](https://github.com/fwcd/bassbox).
+A GUI for [Bassbox](https://github.com/fwcd/bassbox) that lets the user graphically create and connect streaming audio nodes.
+
+![Screenshot](screenshot.png)
 
 ## Setup
 * Run `npm install`
