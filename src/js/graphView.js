@@ -68,10 +68,19 @@ function createNodeDetailsEditor(node, updateButtonLabel, performUpdate) {
 					row.appendChild(checkBox);
 					break;
 				default:
-					const otherField = document.createElement("input");
-					otherField.disabled = true;
-					otherField.value = value;
-					row.appendChild(otherField);
+					if (Array.isArray(value)) {
+						const textField = document.createElement("input");
+						textField.placeholder = "Enter comma-separated values";
+						textField.value = value.join(", ");
+						textField.addEventListener("change", () => updatedNode[prop] = textField.value.split(",").map(s => s.trim()));
+						addEnterListener(textField, () => performUpdate(updatedNode));
+						row.appendChild(textField);
+					} else {
+						const otherField = document.createElement("input");
+						otherField.disabled = true;
+						otherField.value = value;
+						row.appendChild(otherField);
+					}
 					break;
 			}
 			
